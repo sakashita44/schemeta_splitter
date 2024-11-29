@@ -39,8 +39,8 @@ def main():
             delimiter=args.delimiter,
             encoding=args.encoding,
         )
-        output_meta = os.path.join(args.output, "_meta.csv")
-        output_data = os.path.join(args.output, "_data.csv")
+        output_meta = args.output + "_meta.csv"
+        output_data = args.output + "_data.csv"
         meta_df.to_csv(output_meta, encoding=args.encoding)
         data_df.to_csv(output_data, encoding=args.encoding)
 
