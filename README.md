@@ -124,15 +124,17 @@ ss.write_file('output.csv', meta_df, data_df, is_wide_format=True, delimiter=','
 
 ### コマンドラインツールとして使う
 
-pipでインストールすると，schemeta_splitterコマンドが使えるようになる
+* 入力ファイルを*_meta.csvと*_data.csvに分割する
+    * ここで，*は-oで指定するファイル名
+* pipでインストールすると，schemeta_splitterコマンドが使えるようになる
 
 ```bash
 schemeta_splitter -i input.csv -o output_dir
 ```
 
 * -i: 入力ファイルのパス
-* -o: 出力ディレクトリのパス
-* -w: ワイド形式のファイルかどうか (True: ワイド形式, False: ロング形式)
+* -o: 出力ファイル名
+* -w: ワイド形式のファイルの場合に指定
 * -d: デリミタ (デフォルト: ',')
 * -e: エンコーディング (デフォルト: 'utf-8')
 * -h: ヘルプ
