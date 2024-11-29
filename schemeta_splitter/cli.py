@@ -32,10 +32,6 @@ def main():
         print(f"Error: Input file {args.input} does not exist.")
         return
 
-    if not os.path.isdir(args.output):
-        print(f"Error: Output directory {args.output} does not exist.")
-        return
-
     try:
         meta_df, data_df = read_file(
             args.input,
