@@ -17,6 +17,8 @@ pip install git+https://github.com/sakashita44/schemeta_splitter.git
 ## 対応ファイル形式
 
 * CSVまたはTSV形式で以下のいずれかのテーブル形式のファイル
+* 列名/行名は任意のものでよい
+    * ファイルで指定された列名/行名がそのままDataFrameの列名/行名になる
 
 ### ワイド形式 (入力例)
 
@@ -132,3 +134,60 @@ schemeta_splitter -i input.csv -o output_dir
 * -e: エンコーディング (デフォルト: 'utf-8')
 * -h: ヘルプ
 * -v: バージョン
+
+## 関数
+
+### read_file
+
+```python
+def read_file(file_path: str, is_wide_format: bool, delimiter: str = ',', encoding: str = 'utf-8') -> Tuple[pd.DataFrame, pd.DataFrame]:
+```
+
+* file_path: 入力ファイルのパス
+* is_wide_format: ワイド形式のファイルかどうか
+* delimiter: デリミタ (デフォルト: ',')
+* encoding: エンコーディング (デフォルト: 'utf-8')
+* 戻り値: メタデータのDataFrameとデータのDataFrameのタプル
+* 例外: FileNotFoundError, UnicodeDecodeError, ValueError
+* 例:
+
+```python
+meta_df, data_df = ss.read_file('input.csv', is_wide_format=True, delimiter=',', encoding='utf-8')
+```
+
+### write_file
+
+```python
+def write_file(file_path: str, meta_df: pd.DataFrame, data_df: pd.DataFrame, is_wide_format: bool, delimiter: str = ',', encoding: str = 'utf-8') -> None:
+```
+
+* file_path: 出力ファイルのパス
+* meta_df: メタデータのDataFrame
+* data_df: データのDataFrame
+* is_wide_format: ワイド形式で出力するかどうか
+* delimiter: デリミタ (デフォルト: ',')
+* encoding: エンコーディング (デフォルト: 'utf-8')
+* 戻り値: なし
+* 例外: FileNotFoundError, UnicodeEncodeError
+* 例:
+
+```python
+ss.write_file('output.csv', meta_df, data_df, is_wide_format=True, delimiter=',', encoding='utf-8')
+```
+
+### checK_df_format
+
+```python
+def check_df_format(df: pd.DataFrame, meta=True) -> bool:
+```
+
+* df: DataFrame
+* meta: メタデータかどうか (デフォルト: True)
+* 戻り値: フォーマットが正しいかどうか
+* 例外: なし
+* 例:
+
+```python
+check_df_format(meta_df, meta=True)
+check_df_format(data_df, meta=False)
+```
