@@ -100,6 +100,9 @@ pip install git+https://github.com/sakashita44/schemeta_splitter.git
 | 2   | 110   | 110   | 111   | 112   | ... |
 | 3   | ...   | ...   | ...   | ...   | ... |
 
+* uidはindexとして扱われ，index名はもとのファイルの列名と同じになる
+* それ以外の列の列名は元のファイルの列名と同じになる
+
 ## 使い方
 
 ### ライブラリとして使う
@@ -148,7 +151,6 @@ def read_file(file_path: str, is_wide_format: bool, delimiter: str = ',', encodi
 * delimiter: デリミタ (デフォルト: ',')
 * encoding: エンコーディング (デフォルト: 'utf-8')
 * 戻り値: メタデータのDataFrameとデータのDataFrameのタプル
-* 例外: FileNotFoundError, UnicodeDecodeError, ValueError
 * 例:
 
 ```python
@@ -168,7 +170,6 @@ def write_file(file_path: str, meta_df: pd.DataFrame, data_df: pd.DataFrame, is_
 * delimiter: デリミタ (デフォルト: ',')
 * encoding: エンコーディング (デフォルト: 'utf-8')
 * 戻り値: なし
-* 例外: FileNotFoundError, UnicodeEncodeError
 * 例:
 
 ```python
