@@ -2,6 +2,7 @@ import argparse
 import os
 import pandas as pd
 from .io import read_file, write_file
+from .__version__ import __version__
 
 
 def main():
@@ -13,11 +14,14 @@ def main():
     parser.add_argument(
         "-w", "--wide", action="store_true", help="ワイド形式のファイルかどうか"
     )
-    parser.add.argument(
+    parser.add_argument(
         "-d", "--delimiter", default=",", help="デリミタ (デフォルト: ,)"
     )
-    parser.add.argument(
+    parser.add_argument(
         "-e", "--encoding", default="utf-8", help="エンコーディング (デフォルト: utf-8)"
+    )
+    parser.add_argument(
+        "-v", "--version", action="version", version=f"%(prog)s {__version__}"
     )
     args = parser.parse_args()
 
