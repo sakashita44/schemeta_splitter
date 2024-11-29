@@ -10,9 +10,12 @@ def main():
         description="schemeta_splitter: メタデータとデータの分割/結合ツール"
     )
     parser.add_argument("-i", "--input", required=True, help="入力ファイルのパス")
-    parser.add_argument("-o", "--output", required=True, help="出力ディレクトリのパス")
+    parser.add_argument("-o", "--output", required=True, help="出力ファイル名")
     parser.add_argument(
-        "-w", "--wide", action="store_true", help="ワイド形式のファイルかどうか"
+        "-w",
+        "--wide",
+        action="store_true",
+        help="ワイド形式のファイルを処理する場合に指定",
     )
     parser.add_argument(
         "-d", "--delimiter", default=",", help="デリミタ (デフォルト: ,)"
@@ -40,16 +43,12 @@ def main():
             delimiter=args.delimiter,
             encoding=args.encoding,
         )
-        output_file = os.path.join(args.output, "output.csv")
-        write_file(
-            output_file,
-            meta_df,
-            data_df,
-            is_wide_format=args.wide,
-            delimiter=args.delimiter,
-            encoding=args.encoding,
-        )
-        print(f"File successfully written to {output_file}")
+        output_meta = os.path.join(args.output, "_meta.csv")
+        output_data = os.path.join(args.output, "_data.csv")
+        meta_df.to_csv(output_meta, encoding=args.encoding)
+        data_df.to_csv(output_data, encoding=args.encoding)
+
+        print(f"File successfully written to {args.output}")
     except FileNotFoundError as e:
         print(f"File not found: {e}")
     except pd.errors.EmptyDataError as e:
