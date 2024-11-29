@@ -175,20 +175,3 @@ def write_file(file_path: str, meta_df: pd.DataFrame, data_df: pd.DataFrame, is_
 ```python
 ss.write_file('output.csv', meta_df, data_df, is_wide_format=True, delimiter=',', encoding='utf-8')
 ```
-
-### checK_df_format
-
-```python
-def check_df_format(df: pd.DataFrame, meta=True) -> bool:
-```
-
-* df: DataFrame
-* meta: メタデータかどうか (デフォルト: True)
-* 戻り値: フォーマットが正しいかどうか
-* 例外: なし
-* 例:
-
-```python
-check_df_format(meta_df, meta=True)
-check_df_format(data_df, meta=False)
-```
