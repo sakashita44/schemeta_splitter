@@ -39,7 +39,7 @@ data2,101,110,121,131"""
     def test_write_file(self):
         # テスト用のデータを作成
         meta_data = {
-            "uid": [1, 2, 3, 4],
+            "uid": [1, 3, 2, 4],
             "main_id": ["X", "Y", "X", "Y"],
             "sub_id": [1, 1, 2, 2],
             "group": ["A", "A", "B", "B"],
