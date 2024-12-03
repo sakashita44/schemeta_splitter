@@ -43,7 +43,7 @@ pip install git+https://github.com/sakashita44/schemeta_splitter.git
 * data1, data2, data3, data4, ...: データの値
     * 例: 実験で得られた測定値，計算されたパラメータ等
 
-### ロング形式 (入力例)
+### 転置ロング形式 (入力例)
 
 * データ読み込み時にis_wide_format=Falseとする
 
