@@ -3,23 +3,51 @@ from typing import Tuple
 
 
 def read_file(
-    file_path: str, is_wide_format: bool, delimiter: str = ",", encoding: str = "utf-8"
+    file_path: str,
+    is_wide_format: bool,
+    delimiter: str = ",",
+    encoding: str = "utf-8",
+    metadata_count: int = 3,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Read a file and return the metadata and data as separate dataframes.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the file to read.
+    is_wide_format : bool
+        Whether the file is in wide format or not.
+    delimiter : str, optional
+        The delimiter used in the file, by default ",".
+    encoding : str, optional
+        The encoding of the file, by default "utf-8".
+    metadata_count : int, optional
+        The number of rows that contain metadata(exclude index col), by default 3.
+
+    Returns
+    -------
+    Tuple[pd.DataFrame, pd.DataFrame]
+        A tuple containing the metadata and data dataframes.
+            1. The metadata dataframe. (wide format)
+            2. The data dataframe. (wide format)
+    """
+
     df = pd.read_csv(file_path, delimiter=delimiter, encoding=encoding, index_col=0)
     if is_wide_format:
-        meta_columns = df.columns[:3]
+        meta_columns = df.columns[:metadata_count]
         meta_df = df[meta_columns]
         data_df = df.drop(columns=meta_columns)
     else:
-        meta_df = df.iloc[:3].T
-        meta_columns = df.index[:3]
+        meta_df = df.iloc[:metadata_count].T
+        meta_columns = df.index[:metadata_count]
         meta_df.columns = meta_columns
         index_name = meta_df.columns.name
         meta_df.columns.name = ""
         meta_df.index.name = index_name
 
-        data_df = df.iloc[3:].T
-        data_columns = df.index[3:]
+        data_df = df.iloc[metadata_count:].T
+        data_columns = df.index[metadata_count:]
         data_df.columns = data_columns
         data_df.index.name = index_name
         data_df.columns.name = ""
@@ -40,6 +68,24 @@ def write_file(
     delimiter: str = ",",
     encoding: str = "utf-8",
 ) -> None:
+    """
+    Write the metadata and data dataframes to a file.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the file to write.
+    meta_df : pd.DataFrame
+        The metadata dataframe. (wide format)
+    data_df : pd.DataFrame
+        The data dataframe. (wide format)
+    is_wide_format : bool
+        Whether the file is in wide format or not.
+    delimiter : str, optional
+        The delimiter to use in the file, by default ",".
+    encoding : str, optional
+        The encoding of the file, by default "utf-8".
+    """
     if len(meta_df) != len(data_df):
         raise ValueError("The number of rows in meta_df and data_df must be the same.")
     if is_wide_format:
