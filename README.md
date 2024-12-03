@@ -1,6 +1,9 @@
 # schemeta_splitter
 
-`schemeta_splitter`: 規程形式の(メタデータとデータが混在した)テキストファイルを，メタデータとデータのDataFrame(pandas)に分割/またはその逆を行うPythonパッケージ
+* `schemeta_splitter`: 規程形式の(メタデータとデータが混在した)テキストファイルを，メタデータとデータのDataFrame(pandas)に分割/またはその逆を行うPythonパッケージ
+* データをmain_id(被験者番号等), sub_id(試行番号等)で管理し，group(群)で比較することを想定
+    * groupで指定しないメタデータに関しては別のデータベースなどで管理し，あくまで比較時に必要な情報のみを含むファイルを操作することを想定
+        * このためメタデータはmain_id, sub_id, groupの3列 (+識別のためのuid列)のみを含むことを想定
 
 ## インストール
 
@@ -114,7 +117,7 @@ import schemeta_splitter as ss
 # ワイド形式のファイルを読み込む
 meta_df, data_df = ss.read_file('input.csv', is_wide_format=True, delimiter=',', encoding='utf-8')
 
-# ロング形式のファイルを読み込む
+# 転置ロング形式のファイルを読み込む
 meta_df, data_df = ss.read_file('input.csv', is_wide_format=False, delimiter=',', encoding='utf-8')
 
 # メタデータとデータのDataFrameをファイルに書き出す
@@ -134,7 +137,7 @@ schemeta_splitter -i input.csv -o output_dir
 
 * -i: 入力ファイルのパス
 * -o: 出力ファイル名
-* -w: ワイド形式のファイルの場合に指定
+* -w: ワイド形式のファイルの場合に指定, 指定しない場合は転置ロング形式として扱う
 * -d: デリミタ (デフォルト: ',')
 * -e: エンコーディング (デフォルト: 'utf-8')
 * -h: ヘルプ
