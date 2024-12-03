@@ -1,7 +1,7 @@
 import argparse
 import os
 import pandas as pd
-from .io import read_file, write_file
+from .io import read_file
 from .__version__ import __version__
 
 
