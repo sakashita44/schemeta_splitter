@@ -35,6 +35,46 @@ def read_file(
     # Read the file into a DataFrame
     df = pd.read_csv(file_path, delimiter=delimiter, encoding=encoding, index_col=0)
 
+    # Check uid duplication
+    if is_wide_format:
+        uids = df.index
+    else:
+        with open(file_path, "r", encoding=encoding) as f:
+            first_line = f.readline()
+        uids = first_line.strip().split(delimiter)
+
+    if len(uids) != len(set(uids)):
+        raise ValueError("The uid contains duplicates.")
+
+    # Split the DataFrame into metadata and data
+    meta_df, data_df = split_dataframe(df, is_wide_format, metadata_count)
+
+    return meta_df, data_df
+
+
+def split_dataframe(
+    df: pd.DataFrame, is_wide_format: bool, metadata_count: int = 3
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Split a DataFrame into metadata and data DataFrames.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The DataFrame to split (prescribed format).
+        The prescribed format is as follows: https://github.com/sakashita44/schemeta_splitter?tab=readme-ov-file#%E5%AF%BE%E5%BF%9C%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%BD%A2%E5%BC%8F
+    is_wide_format : bool
+        Whether the DataFrame is in wide format or not.
+    metadata_count : int
+        The number of rows that contain metadata(exclude index col).
+
+    Returns
+    -------
+    Tuple[pd.DataFrame, pd.DataFrame]
+        A tuple containing the metadata and data dataframes.
+            1. The metadata dataframe. (wide format)
+            2. The data dataframe. (wide format)
+    """
     # Process the DataFrame based on the format (wide or long)
     if is_wide_format:
         # Check for duplicate indices
@@ -44,10 +84,10 @@ def read_file(
         meta_columns = df.columns[:metadata_count]
         meta_df = df[meta_columns]
         data_df = df.drop(columns=meta_columns)
+
     else:
         # Check for duplicate columns
-        with open(file_path, "r", encoding=encoding) as f:
-            columns = f.readline().strip().split(delimiter)
+        columns = df.columns
         if len(columns) != len(set(columns)):
             raise ValueError("The uid contain duplicates.")
         # Transpose and split the DataFrame into metadata and data
@@ -66,8 +106,10 @@ def read_file(
         data_df.index.name = index_name
 
     # Validate the resulting DataFrames
-    if len(meta_df) == 0 or len(data_df) == 0:
-        raise ValueError("The number of rows in meta_df or data_df is 0.")
+    if len(meta_df) == 0 and metadata_count > 0:
+        raise ValueError("The number of rows in meta_df is 0.")
+    if len(data_df) == 0:
+        raise ValueError("The number of rows in data_df is 0.")
     if len(data_df.columns) == 0:
         raise ValueError("The number of columns in data_df is 0.")
 
@@ -101,16 +143,16 @@ def write_file(
         The encoding of the file, by default "utf-8".
     """
     # Concatenate the metadata and data DataFrames
-    df = get_concatenated_df(meta_df, data_df, is_wide_format)
+    df = concatenate_dataframes(meta_df, data_df, is_wide_format)
     # Write the concatenated DataFrame to a file
     df.to_csv(file_path, sep=delimiter, encoding=encoding, index=True)
 
 
-def get_concatenated_df(
+def concatenate_dataframes(
     meta_df: pd.DataFrame, data_df: pd.DataFrame, get_wide_format: bool
 ) -> pd.DataFrame:
     """
-    Concatenate the metadata and data dataframes.
+    Concatenate the metadata and data dataframes into a selected format.
 
     Parameters
     ----------
