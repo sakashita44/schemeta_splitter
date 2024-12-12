@@ -117,11 +117,17 @@ import schemeta_splitter as ss
 # ワイド形式のファイルを読み込む
 meta_df, data_df = ss.read_file('input.csv', is_wide_format=True, delimiter=',', encoding='utf-8')
 
-# 転置ロング形式のファイルを読み込む
+# 転置形式のファイルを読み込む
 meta_df, data_df = ss.read_file('input.csv', is_wide_format=False, delimiter=',', encoding='utf-8')
 
 # メタデータとデータのDataFrameをファイルに書き出す
 ss.write_file('output.csv', meta_df, data_df, is_wide_format=True, delimiter=',', encoding='utf-8')
+
+# メタデータとデータのDataFrameを結合したDataFrameを取得する
+concat_df = ss.concatenate_dataframes(meta_df, data_df, get_wide_format=True)
+
+# 結合したDataFrameをmeta_dfとdata_dfに分割する
+meta_df, data_df = ss.split_dataframe(concat_df, is_wide_format=True, metadata_count=3)
 
 ```
 
@@ -137,7 +143,7 @@ schemeta_splitter -i input.csv -o output_dir
 
 * -i: 入力ファイルのパス
 * -o: 出力ファイル名
-* -w: ワイド形式のファイルの場合に指定, 指定しない場合は転置ロング形式として扱う
+* -w: ワイド形式のファイルの場合に指定, 指定しない場合は転置形式として扱う
 * -d: デリミタ (デフォルト: ',')
 * -e: エンコーディング (デフォルト: 'utf-8')
 * -h: ヘルプ
@@ -155,7 +161,7 @@ def read_file(file_path: str, is_wide_format: bool, delimiter: str = ',', encodi
 * is_wide_format: ワイド形式のファイルかどうか
 * delimiter: デリミタ (デフォルト: ',')
 * encoding: エンコーディング (デフォルト: 'utf-8')
-* 戻り値: メタデータのDataFrameとデータのDataFrameのタプル
+* 返り値: メタデータのDataFrameとデータのDataFrameのタプル
 * 例:
 
 ```python
@@ -174,9 +180,41 @@ def write_file(file_path: str, meta_df: pd.DataFrame, data_df: pd.DataFrame, is_
 * is_wide_format: ワイド形式で出力するかどうか
 * delimiter: デリミタ (デフォルト: ',')
 * encoding: エンコーディング (デフォルト: 'utf-8')
-* 戻り値: なし
+* 返り値: なし
 * 例:
 
 ```python
 ss.write_file('output.csv', meta_df, data_df, is_wide_format=True, delimiter=',', encoding='utf-8')
+```
+
+### split_dataframe
+
+```python
+def split_dataframe(df: pd.DataFrame, is_wide_format: bool, metadata_count: int) -> Tuple[pd.DataFrame, pd.DataFrame]:
+```
+
+* df: 入力されたDataFrame
+* is_wide_format: ワイド形式のDataFrameかどうか
+* metadata_count: メタデータの行/列数(デフォルト: 3)
+* 返り値: メタデータのDataFrameとデータのDataFrameのタプル
+* 例:
+
+```python
+meta_df, data_df = ss.split_dataframe(df, is_wide_format=True, metadata_count=3)
+```
+
+### concatenate_dataframes
+
+```python
+def concatenate_dataframes(meta_df: pd.DataFrame, data_df: pd.DataFrame, get_wide_format: bool) -> pd.DataFrame:
+```
+
+* meta_df: メタデータのDataFrame
+* data_df: データのDataFrame
+* get_wide_format: ワイド形式で出力するかどうか
+* 返り値: 入力されたDataFrameを結合したDataFrame (get_wide_format=Trueの場合はワイド形式，Falseの場合は転置形式)
+* 例:
+
+```python
+concat_df = ss.concatenate_dataframes(meta_df, data_df, get_wide_format=True)
 ```
